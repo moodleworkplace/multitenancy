@@ -415,7 +415,7 @@ class manager {
      *
      * @param string $pluginname
      */
-    public static function add_plguin_capabilities_to_tenant_admin_role(string $pluginname) {
+    public static function add_plugin_capabilities_to_tenant_admin_role(string $pluginname) {
         global $CFG;
         if (empty($CFG->tool_tenant_adminrole)) {
             // The tenant administrator role has not been created yet. Nothing to do.

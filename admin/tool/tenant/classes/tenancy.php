@@ -311,8 +311,8 @@ class tenancy {
      *
      * @param string $pluginname
      */
-    public static function add_plguin_capabilities_to_tenant_admin_role(string $pluginname) {
-        manager::add_plguin_capabilities_to_tenant_admin_role($pluginname);
+    public static function add_plugin_capabilities_to_tenant_admin_role(string $pluginname) {
+        manager::add_plugin_capabilities_to_tenant_admin_role($pluginname);
     }
 
     /**
