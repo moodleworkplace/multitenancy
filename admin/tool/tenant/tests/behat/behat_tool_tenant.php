@@ -22,7 +22,6 @@
  * @copyright  2018 Moodle Pty Ltd <support@moodle.com>
  * @author      2018 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @license    Moodle Workplace License, distribution is restricted, contact support@moodle.com
  */
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
@@ -39,7 +38,6 @@ require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
  * @copyright  2018 Moodle Pty Ltd <support@moodle.com>
  * @author      2018 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @license    Moodle Workplace License, distribution is restricted, contact support@moodle.com
  */
 class behat_tool_tenant extends behat_base {
 

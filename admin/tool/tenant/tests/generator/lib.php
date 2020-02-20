@@ -21,7 +21,6 @@
  * @copyright  2018 Moodle Pty Ltd <support@moodle.com>
  * @author     2018 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @license    Moodle Workplace License, distribution is restricted, contact support@moodle.com
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -33,7 +32,6 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2018 Moodle Pty Ltd <support@moodle.com>
  * @author     2018 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @license    Moodle Workplace License, distribution is restricted, contact support@moodle.com
  */
 class tool_tenant_generator extends component_generator_base {
 

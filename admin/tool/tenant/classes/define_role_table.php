@@ -21,7 +21,6 @@
  * @copyright   2019 Moodle Pty Ltd <support@moodle.com>
  * @author      2019 Marina Glancy
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @license     Moodle Workplace License, distribution is restricted, contact support@moodle.com
  */
 
 namespace tool_tenant;
@@ -35,7 +34,6 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright   2019 Moodle Pty Ltd <support@moodle.com>
  * @author      2019 Marina Glancy
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @license     Moodle Workplace License, distribution is restricted, contact support@moodle.com
  */
 class define_role_table extends \core_role_define_role_table_basic {
     /** @var bool table is in the "show advanced" mode */
