@@ -186,6 +186,14 @@ class badge_potential_users_selector extends badge_award_selector_base {
         list($esql, $eparams) = get_enrolled_sql($this->context, 'moodle/badges:earnbadge', 0, true);
         $params = array_merge($params, $eparams, $groupwheresqlparams);
 
+        // Add tenant condition.
+        /** @uses \tool_tenant\tenancy::get_users_subquery */
+        $tenantcondition = component_class_callback('tool_tenant\\tenancy', 'get_users_subquery', [true, false, 'u.id'], '');
+
+        if (!empty($tenantcondition)) {
+            $wherecondition .= ' AND ' . $tenantcondition;
+        }
+
         $fields      = 'SELECT ' . $this->required_fields_sql('u');
         $countfields = 'SELECT COUNT(u.id)';
 

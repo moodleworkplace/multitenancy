@@ -313,9 +313,14 @@ function badges_get_badges($type, $courseid = 0, $sort = '', $dir = '', $page = 
             $badges[$r->id]->dateissued = $r->dateissued;
             $badges[$r->id]->uniquehash = $r->uniquehash;
         } else {
+            // Add tenant condition.
+            /** @uses \tool_tenant\tenancy::get_users_subquery */
+            $tenantcondition = component_class_callback('tool_tenant\\tenancy', 'get_users_subquery', [true, true, 'u.id'], '');
+
             $badges[$r->id]->awards = $DB->count_records_sql('SELECT COUNT(b.userid)
                                         FROM {badge_issued} b INNER JOIN {user} u ON b.userid = u.id
-                                        WHERE b.badgeid = :badgeid AND u.deleted = 0', array('badgeid' => $badge->id));
+                                        WHERE ' . $tenantcondition . ' b.badgeid = :badgeid AND u.deleted = 0',
+                                        array('badgeid' => $badge->id));
             $badges[$r->id]->statstring = $badge->get_status_name();
         }
     }

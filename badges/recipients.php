@@ -87,11 +87,15 @@ if ($badge->has_manual_award_criteria() && has_capability('moodle/badges:awardba
     echo $OUTPUT->box($OUTPUT->single_button($url, get_string('award', 'badges')), 'clearfix mdl-align');
 }
 
+// Add tenant condition.
+/** @uses \tool_tenant\tenancy::get_users_subquery */
+$tenantcondition = component_class_callback('tool_tenant\\tenancy', 'get_users_subquery', [true, true, 'u.id'], '');
+
 $namefields = get_all_user_name_fields(true, 'u');
 $sql = "SELECT b.userid, b.dateissued, b.uniquehash, $namefields
     FROM {badge_issued} b INNER JOIN {user} u
         ON b.userid = u.id
-    WHERE b.badgeid = :badgeid AND u.deleted = 0
+    WHERE {$tenantcondition} b.badgeid = :badgeid AND u.deleted = 0
     ORDER BY $sortby $sorthow";
 
 $totalcount = $DB->count_records('badge_issued', array('badgeid' => $badge->id));

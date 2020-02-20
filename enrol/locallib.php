@@ -405,6 +405,10 @@ class course_enrolment_manager {
         $extrafields[] = 'maildisplay';
         $ufields = user_picture::fields('u', $extrafields);
 
+        /** @uses \tool_tenant\tenancy::get_users_subquery */
+        $wherecondition = component_class_callback('tool_tenant\\tenancy', 'get_users_subquery',
+            [], '') . $wherecondition;
+
         return array($ufields, $params, $wherecondition);
     }
 

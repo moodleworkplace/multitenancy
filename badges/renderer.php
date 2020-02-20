@@ -823,9 +823,14 @@ class core_badges_renderer extends plugin_renderer_base {
         }
 
         if (has_capability('moodle/badges:viewawarded', $context)) {
+            // Add tenant condition.
+            /** @uses \tool_tenant\tenancy::get_users_subquery */
+            $tenantcondition = component_class_callback('tool_tenant\\tenancy', 'get_users_subquery', [true, true, 'u.id'], '');
+
             $awarded = $DB->count_records_sql('SELECT COUNT(b.userid)
                                                FROM {badge_issued} b INNER JOIN {user} u ON b.userid = u.id
-                                               WHERE b.badgeid = :badgeid AND u.deleted = 0', array('badgeid' => $badgeid));
+                                               WHERE ' . $tenantcondition . ' b.badgeid = :badgeid AND u.deleted = 0',
+                                              array('badgeid' => $badgeid));
             $row[] = new tabobject('awards',
                         new moodle_url('/badges/recipients.php', array('id' => $badgeid)),
                         get_string('bawards', 'badges', $awarded)
