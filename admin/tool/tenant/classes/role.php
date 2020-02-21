@@ -30,6 +30,10 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Class role, various methods to work with preset tenant roles
  *
+ * Not external API.
+ *
+ * Use {@link \tool_tenant\tenancy} to get information about current tenant and its users
+ *
  * @package     tool_tenant
  * @copyright   2019 Moodle Pty Ltd <support@moodle.com>
  * @author      2019 Marina Glancy

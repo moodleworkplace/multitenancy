@@ -6,9 +6,9 @@ PURPOSES ONLY.
 This plugin adds multi-tenancy feature to Moodle sites. Please note that core modifications are
 required for this plugin to work and it can not be used outside of Moodle Workplace suite.
 
-## Contributed plugins that can work both with and without Multitenancy plugin
+## Contributed plugins that can work both with and without Multi-tenancy plugin
 
-In order to support multitenancy plugins must include the "tenant limitation condition" to any SQL
+In order to support multi-tenancy plugins must include the "tenant limitation condition" to any SQL
 query that queries data from the {user} table. If the plugin has functionality that allows to interact with
 an individual users, the visibility of individual users must also be checked.
 
@@ -37,10 +37,10 @@ How it works:
 
 The method tool_tenant\tenancy::get_users_subquery() takes four parameters, see the phpdocs to the method
 for more details. Make sure to add unittests that test each of the following situations:
-1. Multitenancy plugin is not installed
-2. Multitenancy plugin is installed but site is not multitenant
-3. Multitenancy plugin is installed and current user is allowed to switch between tenants (i.e. global admin)
-4. Multitenancy plugin is installed, there are several tenants, current user belongs to one of the tenants
+1. Multi-tenancy plugin is not installed
+2. Multi-tenancy plugin is installed but site is not multitenant
+3. Multi-tenancy plugin is installed and current user is allowed to switch between tenants (i.e. global admin)
+4. Multi-tenancy plugin is installed, there are several tenants, current user belongs to one of the tenants
    and can not switch between tenants
 
 ### Checking user's visibility
@@ -48,7 +48,7 @@ for more details. Make sure to add unittests that test each of the following sit
 It is often also necessary to check "visibility" of an individual user, for example, the plugin should
 use the get_users_subquery() method in a user selector that allows to pick users to call an AJAX
 script but the web service that returns the result of this call should also check that the userid
-that is passed to it is not hidden from the current user because of multitenancy. Example:
+that is passed to it is not hidden from the current user because of multi-tenancy. Example:
 
         /** @uses \tool_tenant\tenancy::is_user_hidden_by_tenancy */
         if (component_class_callback('tool_tenant\\tenancy', 'is_user_hidden_by_tenancy',
@@ -56,15 +56,15 @@ that is passed to it is not hidden from the current user because of multitenancy
             throw moodle_exception('nopermissions');
         }
 
-If the multitenancy plugin is not present this callback will return false. Note that this method can
+If the multi-tenancy plugin is not present this callback will return false. Note that this method can
 only be used in addition to the regular capability check (such as capability to enrol, view members, notes, etc).
 
 ### Checking access inside courses
 
-When user is already enrolled into a course and this user interacts with other enrolled users, multitenancy checks
+When user is already enrolled into a course and this user interacts with other enrolled users, multi-tenancy checks
 are no longer needed. Instead, __separate group mode__ must be used to separate users inside the courses.
 
-This means that __activity modules plugins__ do not need to implement anything special for multitenancy support.
+This means that __activity modules plugins__ do not need to implement anything special for multi-tenancy support.
 However they must ensure that they fully support separate group mode. When groups support is not possible for the
 activity type, the plugin authors normally recommend to create one instance per group and restrict access to each
 instance based on the group.
@@ -87,7 +87,7 @@ Method for checking if individual user can access the activity (not to be used i
 
     \core_availability\info_module::is_user_visible($cm, $userid)
 
-As for the __enrolment plugins__, they most likely need to be modified to support multitenancy, for example, manual enrolment
+As for the __enrolment plugins__, they most likely need to be modified to support multi-tenancy, for example, manual enrolment
 method in core has been modified to search only among site users that belong to the same tenant as the current user.
 
 See also documentation about shared courses: https://docs.moodle.org/en/Programs#Shared_courses
@@ -127,3 +127,11 @@ Example (db/install.php):
         component_class_callback('tool_tenant\\tenancy', 'add_capabilities_to_tenant_admin_role', ['tool_xyz']);
         return true;
     }
+
+### Important notes
+
+Plugins should not use methods from any other classes other than __\tool_tenant\tenancy__ . Do not access the database tables
+defined in tool_tenant directly in SQL. Database structure and other classes are not part of external API and
+can change without notice.
+
+Example of using this testing infrastructure can be found in [https://github.com/moodleworkplace/moodle-local_tenantexample]()
