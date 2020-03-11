@@ -275,6 +275,26 @@ class manager {
     }
 
     /**
+     * Assign the roles 'tool_tenant_admin' and 'tool_tenant_manager' to admin users.
+     *
+     * @param  int    $tenantid The tenant ID.
+     * @param  array  $userids  IDs of the tenant admins
+     */
+    public function assign_tenant_admin_role(int $tenantid, array $userids) {
+        // Make sure all admins have roles assigned.
+        $adminrole = self::get_tenant_admin_role();
+        $managerrole = self::get_tenant_manager_role();
+        $systemcontext = \context_system::instance();
+        foreach ($userids as $userid) {
+            role_assign($adminrole, $userid, $systemcontext->id, 'tool_tenant', $tenantid);
+            if ($catid = $this->get_tenant($tenantid)->get('categoryid')) {
+                role_assign($managerrole, $userid, \context_coursecat::instance($catid)->id, 'tool_tenant', $tenantid);
+            }
+        }
+        \cache_helper::purge_by_event('changesincoursecat');
+    }
+
+    /**
      * Base URL to view tenants list
      * @return \moodle_url
      */
@@ -335,6 +355,39 @@ class manager {
     }
 
     /**
+     * Lost of roles that tenantmanager can assign in course category context and below
+     *
+     * @return array
+     */
+    protected static function get_tenant_manager_roles_associations() : array {
+        $roles = get_all_roles();
+        $rv = ['view' => [], 'switch' => [], 'override' => [], 'assign' => []];
+        foreach ($roles as $role) {
+            if (in_array($role->shortname, ['student', 'teacher', 'editingteacher', 'coursecreator'])) {
+                $rv['assign'][] = $role->id;
+                $rv['view'][] = $role->id;
+                $rv['override'][] = $role->id;
+            }
+            if (in_array($role->shortname, ['tool_tenant_manager'])) {
+                $rv['view'][] = $role->id;
+            }
+            if (in_array($role->shortname, ['student', 'teacher', 'editingteacher', 'guest'])) {
+                $rv['switch'][] = $role->id;
+            }
+            if (in_array($role->shortname, ['user', 'guest', 'frontpage'])) {
+                $rv['view'][] = $role->id;
+            }
+            if (in_array($role->shortname, ['tool_tenant_user'])) {
+                $rv['override'][] = $role->id;
+            }
+            if (in_array($role->shortname, ['manager'])) {
+                $rv['view'][] = $role->id;
+            }
+        }
+        return $rv;
+    }
+
+    /**
      * Changes core roles to work better in multitenant environment
      */
     public static function change_core_roles() {
@@ -387,26 +440,6 @@ class manager {
     }
 
     /**
-     * Assign the roles 'tool_tenant_admin' and 'tool_tenant_manager' to admin users.
-     *
-     * @param  int    $tenantid The tenant ID.
-     * @param  array  $userids  IDs of the tenant admins
-     */
-    public function assign_tenant_admin_role(int $tenantid, array $userids) {
-        // Make sure all admins have roles assigned.
-        $adminrole = self::get_tenant_admin_role();
-        $managerrole = self::get_tenant_manager_role();
-        $systemcontext = \context_system::instance();
-        foreach ($userids as $userid) {
-            role_assign($adminrole, $userid, $systemcontext->id, 'tool_tenant', $tenantid);
-            if ($catid = $this->get_tenant($tenantid)->get('categoryid')) {
-                role_assign($managerrole, $userid, \context_coursecat::instance($catid)->id, 'tool_tenant', $tenantid);
-            }
-        }
-        \cache_helper::purge_by_event('changesincoursecat');
-    }
-
-    /**
      * Adds plugin capabilities to the "Tenant administrator" role
      *
      * This function should only be called from the plugin's install.php
@@ -436,39 +469,6 @@ class manager {
 
         // Reset caches.
         accesslib_reset_role_cache();
-    }
-
-    /**
-     * Lost of roles that tenantmanager can assign in course category context and below
-     *
-     * @return array
-     */
-    protected static function get_tenant_manager_roles_associations() : array {
-        $roles = get_all_roles();
-        $rv = ['view' => [], 'switch' => [], 'override' => [], 'assign' => []];
-        foreach ($roles as $role) {
-            if (in_array($role->shortname, ['student', 'teacher', 'editingteacher', 'coursecreator'])) {
-                $rv['assign'][] = $role->id;
-                $rv['view'][] = $role->id;
-                $rv['override'][] = $role->id;
-            }
-            if (in_array($role->shortname, ['tool_tenant_manager'])) {
-                $rv['view'][] = $role->id;
-            }
-            if (in_array($role->shortname, ['student', 'teacher', 'editingteacher', 'guest'])) {
-                $rv['switch'][] = $role->id;
-            }
-            if (in_array($role->shortname, ['user', 'guest', 'frontpage'])) {
-                $rv['view'][] = $role->id;
-            }
-            if (in_array($role->shortname, ['tool_tenant_user'])) {
-                $rv['override'][] = $role->id;
-            }
-            if (in_array($role->shortname, ['manager'])) {
-                $rv['view'][] = $role->id;
-            }
-        }
-        return $rv;
     }
 
     /**
