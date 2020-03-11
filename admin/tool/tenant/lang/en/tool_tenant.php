@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 $string['accent'] = 'Accent';
 $string['accent_help'] = 'The colour used to indicate which item is active in the navigation drawer.';
 $string['activetenants'] = 'Active tenants';
-$string['addtenant'] = 'Add tenant';
+$string['addtenant'] = 'New tenant';
 $string['adduser'] = 'New user';
 $string['admin'] = 'Administrator';
 $string['administrators'] = 'Administrators';
